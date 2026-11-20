@@ -111,3 +111,30 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(
 #toast.show{opacity:1}
 
 @media (min-width:700px){ .hero h1{font-size:38px} main{padding:24px} }
+
+/* v1.1 */
+.seg{display:flex;gap:6px;background:var(--chip);border:1px solid var(--line);border-radius:16px;padding:4px;margin-bottom:12px}
+.seg a{flex:1;text-align:center;padding:9px;border-radius:12px;text-decoration:none;font-weight:600;font-size:14px}
+.seg a.on{background:var(--emerald);color:#fff}
+.selbox{border:0;outline:0;font:inherit;font-size:14px;padding:8px;border-radius:12px;background:#f1f5f2;color:#1d2a24;min-width:0;flex:1}
+.pill{border:1px solid var(--line);background:var(--chip);border-radius:99px;padding:6px 12px;font-size:13px;text-decoration:none}
+.card.next{background:linear-gradient(135deg,var(--emerald),var(--deep));color:#fff;border-color:var(--gold)}
+.card.next .small{opacity:.85}
+.big{font-family:"Cormorant Garamond",serif;font-size:26px;font-weight:700;color:var(--gold-soft)}
+.card:not(.next) .big{color:var(--emerald-2)}
+[data-tema="gelap"] .card:not(.next) .big{color:var(--gold-soft)}
+.waktu{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.waktu div{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;background:var(--chip);border:1px solid var(--line)}
+.waktu div.sunat{opacity:.75}
+.waktu div.on{background:var(--gold);color:#1d2a24;border-color:var(--gold)}
+.kompas{display:grid;place-items:center;padding:10px}
+.dial{position:relative;width:240px;height:240px;border-radius:50%;border:3px solid var(--gold);background:radial-gradient(circle,var(--card) 55%,var(--chip));transition:transform .2s linear}
+.dial span{position:absolute;font-weight:700;color:var(--muted)}
+.dial .u{top:8px;left:50%;transform:translateX(-50%);color:#c0392b}.dial .s{bottom:8px;left:50%;transform:translateX(-50%)}
+.dial .t{right:12px;top:50%;transform:translateY(-50%)}.dial .b{left:12px;top:50%;transform:translateY(-50%)}
+.jarum{position:absolute;left:50%;top:50%;width:4px;height:110px;margin-left:-2px;margin-top:-110px;background:linear-gradient(var(--emerald-2),var(--gold));transform-origin:50% 100%;border-radius:4px}
+.jarum i{position:absolute;top:-30px;left:50%;transform:translateX(-50%);font-style:normal;font-size:28px}
+.tabbar a{font-size:10.5px}
+.waktu b{white-space:nowrap}
+.waktu{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.waktu div{gap:8px}

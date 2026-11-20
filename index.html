@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <header class="topbar">
@@ -21,8 +21,9 @@
     <span><b>SAKU</b><small>Sumber Al-Quran &amp; Sunnah</small></span>
   </button>
   <div class="top-actions">
-    <button id="btnTema" class="iconbtn" aria-label="Tukar tema">🌙</button>
-    <button class="iconbtn" onclick="go('#/kredit')" aria-label="Sumber & Kredit">ⓘ</button>
+    <button class="iconbtn" onclick="go('#/simpanan')" aria-label="Simpanan">★</button>
+    <button class="iconbtn" onclick="go('#/tetapan')" aria-label="Tetapan">⚙</button>
+    <button class="iconbtn" onclick="go('#/kredit')" aria-label="Info, Sumber & Kredit">ⓘ</button>
   </div>
 </header>
 
@@ -31,13 +32,15 @@
 <nav class="tabbar">
   <a href="#/" data-tab="utama"><span>⌂</span>Utama</a>
   <a href="#/quran" data-tab="quran"><span>۞</span>Quran</a>
+  <a href="#/hadis" data-tab="hadis"><span>📜</span>Hadis</a>
   <a href="#/doa" data-tab="doa"><span>🤲</span>Doa</a>
-  <a href="#/simpanan" data-tab="simpanan"><span>★</span>Simpanan</a>
+  <a href="#/solat" data-tab="solat"><span>🕌</span>Solat</a>
 </nav>
 
 <div id="toast" role="status"></div>
 
-<script src="data.js"></script>
-<script src="app.js"></script>
+<script src="data.js?v=3"></script>
+<script src="kitab.js?v=3"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
