@@ -138,3 +138,5 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(
 .waktu b{white-space:nowrap}
 .waktu{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .waktu div{gap:8px}
+.card.mufti{border-left:4px solid var(--gold)}
+.seg a{font-size:13px}

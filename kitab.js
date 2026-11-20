@@ -21,7 +21,7 @@ const SUNNAH = [
   { id: "keluar", emoji: "🏡", nama: "Sunnah keluar rumah", kata: ["keluar rumah","rumah","pergi","tawakal"], hadis: [["abudawud",5095]] },
   { id: "sakit", emoji: "🤒", nama: "Sunnah ketika sakit & menziarahi pesakit", kata: ["sakit","ziarah","pesakit","demam","ujian"], hadis: [["bukhari",5675],["bukhari",5645],["bukhari",2996]] },
   { id: "sedih", emoji: "😔", nama: "Sunnah ketika bersedih & kehilangan", kata: ["sedih","duka","risau","kehilangan","mati","menangis"], hadis: [["bukhari",6369],["bukhari",1303]] },
-  { id: "marah", emoji: "😤", nama: "Sunnah ketika marah", kata: ["marah","geram","emosi","sabar"], hadis: [["bukhari",6114],["bukhari",6116]] },
+  { id: "marah", emoji: "😤", nama: "Sunnah ketika marah", kata: ["marah","geram","emosi","sabar"], hadis: [["bukhari",6114],["bukhari",6116],["bukhari",6115],["abudawud",4782]] },
   { id: "pergaulan", emoji: "🤝", nama: "Sunnah dalam pergaulan", kata: ["jiran","kawan","salam","senyum","bercakap","pergaulan","saudara"], hadis: [["bukhari",6018],["bukhari",13],["bukhari",12],["tirmidhi",1956]] },
   { id: "kahwin", emoji: "💍", nama: "Sunnah perkahwinan", kata: ["kahwin","nikah","jodoh","pemuda"], hadis: [["bukhari",5063],["bukhari",5066]] },
   { id: "anak", emoji: "👨‍👩‍👧", nama: "Sunnah mendidik anak & tanggungjawab keluarga", kata: ["anak","didik","solat anak","keluarga","pemimpin"], hadis: [["abudawud",495],["bukhari",893]] },

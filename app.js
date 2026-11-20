@@ -72,7 +72,7 @@ $app.addEventListener("click", async e => {
   if (b.dataset.act === "bm") togBM(ref, b);
   if (b.dataset.act === "buka") go(`#/surah/${ref.split(":")[0]}/${ref.split(":")[1]}`);
   if (!a) return;
-  const teks = `${a.ar}\n\n${a.ms}\n\n— ${a.surah} ${a.ref} (Terjemahan Abdullah Basmeih)\nDikongsi dari SAKU`;
+  const teks = a.jenis === "h" ? `${a.surah}\n\n${a.ar}\n\nMaksud: ${a.ms}\n\n— ${a.ref}\nDikongsi dari SAKU` : `${a.ar}\n\n${a.ms}\n\n— ${a.surah} ${a.ref} (Terjemahan Abdullah Basmeih)\nDikongsi dari SAKU`;
   if (b.dataset.act === "salin") { try { await navigator.clipboard.writeText(teks); toast("Disalin"); } catch (x) { toast("Tidak dapat menyalin"); } }
   if (b.dataset.act === "kongsi") {
     if (navigator.share) navigator.share({ text: teks }).catch(() => {});
@@ -212,55 +212,74 @@ async function viewSurah(n, ke) {
   } catch (e) { document.getElementById("sr").innerHTML = ralat(); }
 }
 
-async function viewDoa() {
-  const kats = [...new Set(DOA.map(d => d.kat))];
-  $app.innerHTML = `<h2 class="sec">Doa dari al-Quran</h2>
-    <form class="searchbox" style="margin-bottom:12px" onsubmit="event.preventDefault();const v=this.q.value.trim();if(v)go('#/doa/cari/'+encodeURIComponent(v))">
-      <input name="q" placeholder="Cari doa / ayat: cth ampun, rezeki, anak, sakit" autocomplete="off" enterkeyhint="search">
-      <button>Cari</button>
-    </form>
-    <p class="muted small">Teks Arab, transliterasi dan terjemahan dipaparkan terus dari pangkalan data al-Quran. Doa dari hadis akan ditambah dalam versi akan datang.</p>
-    ${fontCtl()}
-    ${kats.map(k => `<h2 class="sec">${esc(k)}</h2><div data-kat="${esc(k)}">${loading()}</div>`).join("")}`;
-  for (const k of kats) {
-    const box = $app.querySelector(`[data-kat="${CSS.escape(k)}"]`);
-    try {
-      const html = [];
-      for (const d of DOA.filter(x => x.kat === k)) {
-        const list = await ambilBanyak([d.ref]); daftar(list);
-        if (list.length === 1) html.push(kadAyat(list[0], `<span class="small muted">${esc(d.tajuk)}</span>`));
-        else {
-          const gab = { ref: list[0].ref, surah: list[0].surah, ar: list.map(a => a.ar).join(" ۝ "), tr: list.map(a => a.tr).join(" "), ms: list.map(a => a.ms).join(" ") };
-          gab.ref = d.ref; terakhir[d.ref] = gab;
-          html.push(kadAyat(gab, `<span class="small muted">${esc(d.tajuk)}</span>`));
-        }
-      }
-      if (box) box.innerHTML = html.join("");
-    } catch (e) { if (box) box.innerHTML = ralat(); }
-  }
+/* ---------- Doa (al-Quran + hadis) ---------- */
+const slug = t => "d:" + norm(t).replace(/ /g, "-");
+const KAT_DOA = ["Harian", "Masjid & Solat", "Zikir Pagi & Petang", "Keampunan", "Kebaikan", "Rezeki & Hutang", "Ilmu & Urusan", "Ibu Bapa", "Pasangan & Zuriat", "Keluarga & Sosial", "Syukur", "Sakit & Ujian", "Perlindungan", "Persaudaraan", "Ramadan", "Cuaca & Alam"];
+const IKON_KAT = { "Harian": "🏠", "Masjid & Solat": "🕌", "Zikir Pagi & Petang": "🌅", "Keampunan": "🕊️", "Kebaikan": "✨", "Rezeki & Hutang": "💰", "Ilmu & Urusan": "🗝️", "Ibu Bapa": "👵", "Pasangan & Zuriat": "💍", "Keluarga & Sosial": "🤝", "Syukur": "🌿", "Sakit & Ujian": "🤲", "Perlindungan": "🛡️", "Persaudaraan": "🫂", "Ramadan": "🌙", "Cuaca & Alam": "🌧️" };
+const katQ = k => k === "Rezeki" ? "Rezeki & Hutang" : k;
+const DOA_Q = [...DOA, ...DOA_Q_TAMBAH].map(d => ({ ...d, kat: katQ(d.kat), s: d.s || DOA_Q_SUMBER[d.ref] || [] }));
+DOA_H.forEach(d => (d.id = slug(d.t)));
+const kiraKat = k => DOA_Q.filter(d => d.kat === k).length + DOA_H.filter(d => d.k === k).length;
+const kreditSumber = s => s && s.length ? `<p class="small muted" style="margin:8px 0 0">Dihimpun daripada: ${s.map(x => SUMBER_DOA[x]?.u ? `<a href="${SUMBER_DOA[x].u}" target="_blank" rel="noopener">${esc(SUMBER_DOA[x].n.split(" — ")[0])}</a>` : esc(SUMBER_DOA[x]?.n.split(" (")[0] || x)).join(", ")}</p>` : "";
+const lencanaSt = st => st === "tiada" ? `<span class="badge">Sumber tidak dinyatakan</span>` : st === "athar" ? `<span class="badge">Athar / amalan salaf</span>` : `<span class="badge ok">Ada riwayat hadis</span>`;
+
+function kadDoaH(d) {
+  terakhir[d.id] = { ar: d.a, ms: d.m, surah: d.t, ref: d.d, jenis: "h" };
+  return `<article class="card ayat" data-ref="${d.id}">
+    <div class="ref"><b>${esc(d.t)}</b></div>
+    <p class="arab">${esc(d.a)}</p>
+    <p class="terj"><span class="muted small">Maksud: </span>${esc(d.m)}</p>
+    <p class="small" style="margin:8px 0 6px">📚 ${esc(d.d)}${d.h ? ` · <a href="#/hadis/${d.h[0]}/no/${d.h[1]}">Lihat hadis ${esc(KITAB[d.h[0]].nama)} No. ${d.h[1]} →</a>` : ""}</p>
+    <div>${lencanaSt(d.st)} <span class="badge">Belum disemak</span></div>
+    ${kreditSumber(d.s)}
+    <div class="acts">
+      <button class="${isBM(d.id) ? "on" : ""}" data-act="bm">${isBM(d.id) ? "★ Disimpan" : "☆ Simpan"}</button>
+      <button data-act="salin">⧉ Salin</button>
+      <button data-act="kongsi">↗ Kongsi</button>
+    </div></article>`;
+}
+async function kadDoaQ(d) {
+  const list = await ambilBanyak([d.ref]); daftar(list);
+  const a = list.length === 1 ? list[0] : { ref: d.ref, surah: list[0].surah, ar: list.map(x => x.ar).join(" ۝ "), tr: list.map(x => x.tr).join(" "), ms: list.map(x => x.ms).join(" ") };
+  a.ref = d.ref; terakhir[d.ref] = a;
+  return kadAyat(a, `<span class="small muted">${esc(d.tajuk)}</span>`).replace("</article>", kreditSumber(d.s) + "</article>");
+}
+async function lukisDoa(box, qs, hs) {
+  const html = hs.map(kadDoaH);
+  box.innerHTML = html.join("") + (qs.length ? loading("Memuatkan doa al-Quran…") : "");
+  try {
+    for (const d of qs) html.push(await kadDoaQ(d));
+    box.innerHTML = html.join("") || `<p class="muted small">Tiada doa.</p>`;
+  } catch (e) { box.innerHTML = html.join("") + ralat(); }
 }
 
+function viewDoa() {
+  $app.innerHTML = `<h2 class="sec">Doa &amp; Zikir</h2>
+    <form class="searchbox" style="margin-bottom:12px" onsubmit="event.preventDefault();const v=this.q.value.trim();if(v)go('#/doa/cari/'+encodeURIComponent(v))">
+      <input name="q" placeholder="Cari doa: cth tidur, hutang, hujan, pengantin" autocomplete="off" enterkeyhint="search">
+      <button>Cari</button>
+    </form>
+    <p class="muted small">${DOA_Q.length + DOA_H.length} doa &amp; zikir — daripada al-Quran (teks dari pangkalan data al-Quran) dan hadis (dihimpun daripada 6 sumber, lihat ⓘ Info).</p>
+    <div class="chips">${KAT_DOA.filter(kiraKat).map(k => `<button class="chip" onclick="go('#/doa/kat/${encodeURIComponent(k)}')"><span>${IKON_KAT[k] || "🤲"}</span><div>${esc(k)}<div class="small muted" style="font-weight:400">${kiraKat(k)} doa</div></div></button>`).join("")}</div>`;
+}
+async function viewDoaKat(k) {
+  $app.innerHTML = `<button class="back" onclick="go('#/doa')">← Semua kategori</button><h2 class="sec">${IKON_KAT[k] || ""} ${esc(k)}</h2>${fontCtl()}<div id="dk">${loading()}</div>`;
+  lukisDoa(document.getElementById("dk"), DOA_Q.filter(d => d.kat === k), DOA_H.filter(d => d.k === k));
+}
 async function viewDoaCari(q) {
   catatSejarah(q);
   const nq = norm(q);
-  const kataQ = nq.split(" ").filter(w => w.length > 2);
-  const doa = DOA.filter(d => { const t = norm(d.tajuk + " " + d.kat); return t.includes(nq) || kataQ.some(w => t.includes(w)); });
+  const kataQ = nq.split(" ").filter(w => w.length > 2 && !["doa", "saya", "untuk", "yang", "ketika", "dan"].includes(w));
+  const cocok = t => { t = norm(t); return t.includes(nq) || kataQ.some(w => t.includes(w)); };
+  const qs = DOA_Q.filter(d => cocok(d.tajuk + " " + d.kat));
+  const hs = DOA_H.filter(d => cocok(d.t + " " + d.k + " " + d.m));
   const topik = padanTopik(q);
   $app.innerHTML = `<button class="back" onclick="go('#/doa')">← Semua doa</button><h2 class="sec">Cari doa: “${esc(q)}”</h2>
     ${topik.length ? `<p class="muted small">Topik berkaitan:</p><div class="chips">${topik.map(chipTopik).join("")}</div>` : ""}
-    <h2 class="sec">Doa dalam SAKU</h2><div id="dh">${doa.length ? loading() : `<p class="muted small">Tiada doa dalam senarai SAKU yang sepadan.</p>`}</div>
+    <h2 class="sec">Doa dalam SAKU (${qs.length + hs.length})</h2>${fontCtl()}<div id="dh">${qs.length + hs.length ? loading() : `<p class="muted small">Tiada doa dalam senarai SAKU yang sepadan.</p>`}</div>
     <h2 class="sec">Ayat lain dalam al-Quran</h2><div id="terj">${loading("Mencari dalam terjemahan…")}</div>`;
   cariTerj(q, document.getElementById("terj"));
-  if (!doa.length) return;
-  try {
-    const html = [];
-    for (const d of doa) {
-      const list = await ambilBanyak([d.ref]); daftar(list);
-      const a = list.length === 1 ? list[0] : { ref: d.ref, surah: list[0].surah, ar: list.map(x => x.ar).join(" ۝ "), tr: list.map(x => x.tr).join(" "), ms: list.map(x => x.ms).join(" ") };
-      terakhir[d.ref] = a; html.push(kadAyat(a, `<span class="small muted">${esc(d.tajuk)}</span>`));
-    }
-    document.getElementById("dh").innerHTML = html.join("");
-  } catch (e) { document.getElementById("dh").innerHTML = ralat(); }
+  if (qs.length + hs.length) lukisDoa(document.getElementById("dh"), qs, hs);
 }
 
 async function viewSimpanan() {
@@ -268,7 +287,11 @@ async function viewSimpanan() {
     ${HIST.length ? `<h2 class="sec">Sejarah carian</h2><div class="chips">${HIST.map(h => `<button class="chip" onclick="go('#/cari/${encodeURIComponent(h)}')"><span>↺</span>${esc(h)}</button>`).join("")}</div>
       <p><button class="back" onclick="HIST=[];simpan('saku_hist',[]);viewSimpanan()">Padam sejarah carian</button></p>` : ""}`;
   if (!BM.length) return;
-  try { const list = await ambilBanyak(BM); daftar(list); document.getElementById("bm").innerHTML = list.map(a => kadAyat(a)).join(""); }
+  try {
+    const hs = BM.filter(r => r.startsWith("d:")).map(r => DOA_H.find(d => d.id === r)).filter(Boolean);
+    const list = await ambilBanyak(BM.filter(r => /^\d+:\d+(-\d+)?$/.test(r))); daftar(list);
+    document.getElementById("bm").innerHTML = hs.map(kadDoaH).join("") + list.map(a => kadAyat(a)).join("");
+  }
   catch (e) { document.getElementById("bm").innerHTML = ralat(); }
 }
 
@@ -276,6 +299,7 @@ function viewKredit() {
   $app.innerHTML = `<button class="back" onclick="history.back()">← Kembali</button><h2 class="sec">Sumber &amp; Kredit</h2>
   <div class="card"><b>Teks al-Quran & terjemahan</b><p class="small">Teks Arab (Uthmani), transliterasi dan terjemahan Bahasa Melayu oleh <b>Abdullah Muhammad Basmeih</b> diambil melalui <b>Al-Quran Cloud API</b> (alquran.cloud). Digunakan untuk kegunaan peribadi, percuma dan bukan komersial.</p></div>
   <div class="card"><b>Hadis</b><p class="small">Teks Arab, terjemahan (Bahasa Indonesia / Inggeris) dan penilaian status hadis diambil melalui <b>Free Hadith API</b> oleh fawazahmed0 (The Unlicense). Penomboran mengikut sumber tersebut. Hadis Sahih al-Bukhari dan Sahih Muslim diterima sebagai sahih oleh jumhur ulama; status kitab lain dipaparkan mengikut penilai yang dinyatakan.</p></div>
+  <div class="card"><b>Himpunan doa &amp; zikir</b><p class="small">Doa daripada hadis dihimpun daripada: ${Object.values(SUMBER_DOA).map(x => x.u ? `<a href="${x.u}" target="_blank" rel="noopener">${esc(x.n)}</a>` : esc(x.n)).join("; ")}. Teks Arab diambil daripada sumber tersebut; maksud ditulis semula secara ringkas oleh SAKU. Semua entri berlabel <i>Belum disemak</i> sehingga disemak oleh ahli ilmu.</p></div>
   <div class="card"><b>Waktu solat</b><p class="small">Waktu solat dan zon berdasarkan data e-Solat <b>JAKIM</b>, melalui API waktusolat.app. Arah kiblat dikira daripada lokasi peranti ke Kaabah (21.4225°U, 39.8262°T).</p></div>
   <div class="card"><b>Font</b><p class="small">Amiri (SIL Open Font License) melalui Google Fonts.</p></div>
   <div class="card"><b>Indeks topik</b><p class="small">Pemilihan ayat untuk setiap topik disusun sebagai rujukan awal dan berlabel <i>Belum disemak</i> sehingga disemak oleh ahli ilmu. Ia bukan tafsir atau fatwa.</p></div>
@@ -530,7 +554,7 @@ async function router() {
   if (p[0] === "topik") return viewTopik(p[1]);
   if (p[0] === "quran") return viewQuran();
   if (p[0] === "surah") return viewSurah(+p[1], p[2] ? +p[2] : 0);
-  if (p[0] === "doa") return p[1] === "cari" ? viewDoaCari(p.slice(2).join("/")) : viewDoa();
+  if (p[0] === "doa") return p[1] === "cari" ? viewDoaCari(p.slice(2).join("/")) : p[1] === "kat" ? viewDoaKat(p.slice(2).join("/")) : viewDoa();
   if (p[0] === "simpanan") return viewSimpanan();
   if (p[0] === "kredit") return viewKredit();
   if (p[0] === "tetapan") return viewTetapan();

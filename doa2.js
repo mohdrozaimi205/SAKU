@@ -10,7 +10,9 @@ const SUMBER_DOA = {
   pq: { n: "Pusat Pengajian Al-Quran Nur Wahyu — Himpunan Doa", u: "https://pengajianalquranacademy.school.blog/himpunan-doa-doa/" },
   em: { n: "e-Muallaf (JAKIM) — Doa", u: "https://emuallaf.islam.gov.my/index.php?ikon/doa" },
   ko: { n: "Koleksi Doa & Zikir (JomSolat, kata aluan Mufti Wilayah Persekutuan)", u: "" },
-  ol: { n: "Buku Doa Mustajab Ramadan (Olive House)", u: "https://www.olivehouse.my" }
+  ol: { n: "Buku Doa Mustajab Ramadan (Olive House)", u: "https://www.olivehouse.my" },
+  ad: { n: "Akademi Darul Ilmi — Kawal Marah dengan Iman dan Doa", u: "https://akademidarulilmi.com/kawal-marah-dengan-iman-dan-doa/" },
+  mw: { n: "Jabatan Mufti Wilayah Persekutuan", u: "https://www.muftiwp.gov.my/ms/" }
 };
 
 const DOA_H = [
@@ -118,6 +120,11 @@ const DOA_H = [
   { k: "Perlindungan", t: "Doa ketika berhenti/menginap di sesuatu tempat", a: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", m: "Aku berlindung dengan kalimah-kalimah Allah yang sempurna daripada kejahatan makhluk yang Dia ciptakan.", d: "Riwayat Muslim", s: ["ko"], st: "hadis" },
   { k: "Perlindungan", t: "Berlindung daripada bakhil, pengecut, nyanyuk & fitnah", a: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْبُخْلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ، وَأَعُوذُ بِكَ مِنْ أَنْ أُرَدَّ إِلَىٰ أَرْذَلِ الْعُمُرِ، وَأَعُوذُ بِكَ مِنْ فِتْنَةِ الدُّنْيَا وَعَذَابِ الْقَبْرِ", m: "Ya Allah, aku berlindung kepada-Mu daripada sifat bakhil dan penakut, daripada dikembalikan ke usia paling lemah (nyanyuk), dan daripada fitnah dunia serta azab kubur.", d: "Riwayat al-Bukhari", s: ["pq"], st: "hadis" },
   { k: "Perlindungan", t: "Doa berlindung daripada bencana dan kebimbangan", a: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْبَلَاءِ فِي النَّفْسِ وَالْأَهْلِ وَالْمَالِ وَالْوَلَدِ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، مِمَّا أَخَافُ وَأَحْذَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، عَدَدَ ذُنُوبِنَا حَتَّىٰ تُغْفَرَ", m: "Ya Allah, aku berlindung kepada-Mu daripada bencana pada diri, keluarga, harta dan anak. Allah Maha Besar (3 kali) daripada apa yang aku takuti dan bimbangi. Allah Maha Besar (3 kali) sebanyak dosa kami hingga diampunkan.", d: "Sumber tidak dinyatakan", s: ["il"], st: "tiada" },
+
+  // ---------- Marah & Emosi ----------
+  { k: "Marah & Emosi", t: "Doa ketika marah", a: "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي، وَأَذْهِبْ غَيْظَ قَلْبِي، وَأَجِرْنِي مِنَ الشَّيْطَانِ", m: "Ya Allah, ampunilah dosaku, hilangkanlah kemarahan dalam hatiku, dan lindungilah aku daripada syaitan.", d: "Riwayat Ibnu as-Sunni ('Amal al-Yaum wa al-Lailah) — perawi tidak dinyatakan dalam sumber artikel", s: ["ad"], st: "hadis" },
+  { k: "Marah & Emosi", t: "Ucapan ta'awwuz ketika marah", a: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ", m: "Aku berlindung kepada Allah daripada syaitan yang direjam.", d: "Riwayat al-Bukhari dan Muslim", h: ["bukhari", 6115], s: ["ad"], st: "hadis" },
+  { k: "Marah & Emosi", t: "Berlindung daripada gelisah dan sedih", a: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ", m: "Ya Allah, aku berlindung kepada-Mu daripada rasa gelisah dan sedih. (Petikan awal doa riwayat al-Bukhari — lihat versi penuh dalam kategori Rezeki & Hutang.)", d: "Riwayat al-Bukhari", h: ["bukhari", 6369], s: ["ko", "em"], st: "hadis" },
 
   // ---------- Keluarga & Sosial ----------
   { k: "Keluarga & Sosial", t: "Ucapan kepada orang yang berbuat baik", a: "جَزَاكَ اللَّهُ خَيْرًا", m: "Semoga Allah membalasmu dengan kebaikan. (Jawapan: وَإِيَّاكَ — dan kamu juga.)", d: "Riwayat at-Tirmizi", s: ["ko"], st: "hadis" },
