@@ -177,7 +177,7 @@ async function viewTopik(id) {
     ${t.perubatan ? `<div class="notice">🩺 Doa dan ayat ini adalah ikhtiar rohani. Ia <b>tidak menggantikan rawatan perubatan</b> — sila dapatkan nasihat doktor.</div>` : ""}
     ${t.amaran ? `<div class="notice">⚠️ Al-Quran dan doa <b>bukan alat untuk memaksa atau mengawal kehendak orang lain</b>. Amalan "penunduk" atau "pengasih" secara mistik tiada sandaran yang sahih. Doakan kebaikan, dan perbaiki akhlak serta tutur kata.</div>` : ""}
     ${fontCtl()}<div id="senarai">${loading()}</div>`;
-  try { const list = await ambilBanyak(t.ayat); daftar(list); document.getElementById("senarai").innerHTML = list.map(a => kadAyat(a)).join(""); }
+  try { const list = await ambilBanyak(t.ayat); daftar(list); document.getElementById("senarai").innerHTML = list.map(a => kadAyat(a)).join("") + kadMufti(MUFTI_TOPIK[t.id]); }
   catch (e) { document.getElementById("senarai").innerHTML = ralat(); }
 }
 
@@ -214,8 +214,8 @@ async function viewSurah(n, ke) {
 
 /* ---------- Doa (al-Quran + hadis) ---------- */
 const slug = t => "d:" + norm(t).replace(/ /g, "-");
-const KAT_DOA = ["Harian", "Masjid & Solat", "Zikir Pagi & Petang", "Keampunan", "Kebaikan", "Rezeki & Hutang", "Ilmu & Urusan", "Ibu Bapa", "Pasangan & Zuriat", "Keluarga & Sosial", "Syukur", "Sakit & Ujian", "Perlindungan", "Persaudaraan", "Ramadan", "Cuaca & Alam"];
-const IKON_KAT = { "Harian": "🏠", "Masjid & Solat": "🕌", "Zikir Pagi & Petang": "🌅", "Keampunan": "🕊️", "Kebaikan": "✨", "Rezeki & Hutang": "💰", "Ilmu & Urusan": "🗝️", "Ibu Bapa": "👵", "Pasangan & Zuriat": "💍", "Keluarga & Sosial": "🤝", "Syukur": "🌿", "Sakit & Ujian": "🤲", "Perlindungan": "🛡️", "Persaudaraan": "🫂", "Ramadan": "🌙", "Cuaca & Alam": "🌧️" };
+const KAT_DOA = ["Harian", "Masjid & Solat", "Zikir Pagi & Petang", "Keampunan", "Kebaikan", "Rezeki & Hutang", "Ilmu & Urusan", "Ibu Bapa", "Pasangan & Zuriat", "Keluarga & Sosial", "Syukur", "Sakit & Ujian", "Marah & Emosi", "Perlindungan", "Persaudaraan", "Ramadan", "Cuaca & Alam"];
+const IKON_KAT = { "Harian": "🏠", "Masjid & Solat": "🕌", "Zikir Pagi & Petang": "🌅", "Keampunan": "🕊️", "Kebaikan": "✨", "Rezeki & Hutang": "💰", "Ilmu & Urusan": "🗝️", "Ibu Bapa": "👵", "Pasangan & Zuriat": "💍", "Keluarga & Sosial": "🤝", "Syukur": "🌿", "Sakit & Ujian": "🤲", "Marah & Emosi": "😤", "Perlindungan": "🛡️", "Persaudaraan": "🫂", "Ramadan": "🌙", "Cuaca & Alam": "🌧️" };
 const katQ = k => k === "Rezeki" ? "Rezeki & Hutang" : k;
 const DOA_Q = [...DOA, ...DOA_Q_TAMBAH].map(d => ({ ...d, kat: katQ(d.kat), s: d.s || DOA_Q_SUMBER[d.ref] || [] }));
 DOA_H.forEach(d => (d.id = slug(d.t)));
@@ -260,7 +260,8 @@ function viewDoa() {
       <button>Cari</button>
     </form>
     <p class="muted small">${DOA_Q.length + DOA_H.length} doa &amp; zikir — daripada al-Quran (teks dari pangkalan data al-Quran) dan hadis (dihimpun daripada 6 sumber, lihat ⓘ Info).</p>
-    <div class="chips">${KAT_DOA.filter(kiraKat).map(k => `<button class="chip" onclick="go('#/doa/kat/${encodeURIComponent(k)}')"><span>${IKON_KAT[k] || "🤲"}</span><div>${esc(k)}<div class="small muted" style="font-weight:400">${kiraKat(k)} doa</div></div></button>`).join("")}</div>`;
+    <div class="chips" style="margin-bottom:14px">${KAT_DOA.filter(kiraKat).map(k => `<button class="chip" onclick="go('#/doa/kat/${encodeURIComponent(k)}')"><span>${IKON_KAT[k] || "🤲"}</span><div>${esc(k)}<div class="small muted" style="font-weight:400">${kiraKat(k)} doa</div></div></button>`).join("")}</div>
+    ${kadMufti(MUFTI_TOPIK.doa, "Panduan doa — Jabatan Mufti Wilayah Persekutuan")}`;
 }
 async function viewDoaKat(k) {
   $app.innerHTML = `<button class="back" onclick="go('#/doa')">← Semua kategori</button><h2 class="sec">${IKON_KAT[k] || ""} ${esc(k)}</h2>${fontCtl()}<div id="dk">${loading()}</div>`;
@@ -300,6 +301,7 @@ function viewKredit() {
   <div class="card"><b>Teks al-Quran & terjemahan</b><p class="small">Teks Arab (Uthmani), transliterasi dan terjemahan Bahasa Melayu oleh <b>Abdullah Muhammad Basmeih</b> diambil melalui <b>Al-Quran Cloud API</b> (alquran.cloud). Digunakan untuk kegunaan peribadi, percuma dan bukan komersial.</p></div>
   <div class="card"><b>Hadis</b><p class="small">Teks Arab, terjemahan (Bahasa Indonesia / Inggeris) dan penilaian status hadis diambil melalui <b>Free Hadith API</b> oleh fawazahmed0 (The Unlicense). Penomboran mengikut sumber tersebut. Hadis Sahih al-Bukhari dan Sahih Muslim diterima sebagai sahih oleh jumhur ulama; status kitab lain dipaparkan mengikut penilai yang dinyatakan.</p></div>
   <div class="card"><b>Himpunan doa &amp; zikir</b><p class="small">Doa daripada hadis dihimpun daripada: ${Object.values(SUMBER_DOA).map(x => x.u ? `<a href="${x.u}" target="_blank" rel="noopener">${esc(x.n)}</a>` : esc(x.n)).join("; ")}. Teks Arab diambil daripada sumber tersebut; maksud ditulis semula secara ringkas oleh SAKU. Semua entri berlabel <i>Belum disemak</i> sehingga disemak oleh ahli ilmu.</p></div>
+  <div class="card"><b>Nasihat Mufti</b><p class="small">Pautan artikel dan carian daripada laman rasmi <a href="https://www.muftiwp.gov.my/ms/" target="_blank" rel="noopener">Jabatan Mufti Wilayah Persekutuan</a>. Kandungan artikel kekal di laman tersebut.</p></div>
   <div class="card"><b>Waktu solat</b><p class="small">Waktu solat dan zon berdasarkan data e-Solat <b>JAKIM</b>, melalui API waktusolat.app. Arah kiblat dikira daripada lokasi peranti ke Kaabah (21.4225°U, 39.8262°T).</p></div>
   <div class="card"><b>Font</b><p class="small">Amiri (SIL Open Font License) melalui Google Fonts.</p></div>
   <div class="card"><b>Indeks topik</b><p class="small">Pemilihan ayat untuk setiap topik disusun sebagai rujukan awal dan berlabel <i>Belum disemak</i> sehingga disemak oleh ahli ilmu. Ia bukan tafsir atau fatwa.</p></div>
@@ -345,7 +347,7 @@ async function ambilHadis(k, n) {
   const [t, a] = await Promise.all([getJSON(`${HAPI}/${bhs()}-${k}/${n}.min.json`), getJSON(`${HAPI}/ara-${k}/${n}.min.json`).catch(() => null)]);
   return { h: t.hadiths[0], ar: a?.hadiths?.[0]?.text, bab: Object.values(t.metadata.section || {})[0] };
 }
-const segHadis = aktif => `<div class="seg"><a href="#/hadis" class="${aktif === "sunnah" ? "on" : ""}">Sunnah</a><a href="#/hadis/kitab" class="${aktif === "kitab" ? "on" : ""}">Kitab Hadis</a></div>`;
+const segHadis = aktif => `<div class="seg"><a href="#/hadis" class="${aktif === "sunnah" ? "on" : ""}">Sunnah</a><a href="#/hadis/kitab" class="${aktif === "kitab" ? "on" : ""}">Kitab Hadis</a><a href="#/mufti" class="${aktif === "mufti" ? "on" : ""}">Nasihat Mufti</a></div>`;
 
 function viewHadis() {
   $app.innerHTML = `<h2 class="sec">Hadis &amp; Sunnah</h2>${segHadis("sunnah")}
@@ -364,7 +366,7 @@ async function viewSunnah(id) {
   $app.innerHTML = `<button class="back" onclick="go('#/hadis')">← Semua sunnah</button><h2 class="sec">${x.emoji} ${esc(x.nama)}</h2>${fontCtl()}<div id="hs">${loading()}</div>`;
   try {
     const L = await Promise.all(x.hadis.map(([k, n]) => ambilHadis(k, n).then(r => ({ k, ...r }))));
-    document.getElementById("hs").innerHTML = L.map(r => kadHadis(r.k, r.h, r.ar)).join("");
+    document.getElementById("hs").innerHTML = L.map(r => kadHadis(r.k, r.h, r.ar)).join("") + kadMufti(MUFTI_TOPIK[{ marah: "marah", sedih: "sedih", kahwin: "rumahtangga", anak: "didikanak", ibubapa: "ibubapa", kerja: "rezeki", ibadah: "ampun" }[x.id]]);
   } catch (e) { document.getElementById("hs").innerHTML = ralat(); }
 }
 function viewHadisKitabList() {
@@ -409,6 +411,23 @@ async function viewHadisNo(k, n) {
   $app.innerHTML = `<button class="back" onclick="history.back()">← Kembali</button><h2 class="sec">${esc(K.nama)} · No. ${n}</h2>${fontCtl()}<div id="hs">${loading()}</div>`;
   try { const r = await ambilHadis(k, n); document.getElementById("hs").innerHTML = (r.bab ? `<p class="muted small">Bab: ${esc(r.bab)}</p>` : "") + kadHadis(k, r.h, r.ar); }
   catch (e) { document.getElementById("hs").innerHTML = `<div class="notice">Hadis No. ${n} tidak ditemui dalam ${esc(K.nama)}${K.akhir ? ` (julat 1–${K.akhir})` : ""}.</div>`; }
+}
+
+
+/* ---------- Rujukan Mufti WP ---------- */
+const kadMufti = (L, judul = "Bacaan lanjut — Jabatan Mufti Wilayah Persekutuan") => L && L.length ? `<div class="card mufti"><b>🏛️ ${judul}</b><div class="list" style="margin-top:8px">${L.map(([t, u]) => `<a href="${MUFTI_BASE + u}" target="_blank" rel="noopener"><div class="grow"><b style="font-size:14px">${esc(t)}</b><div class="small muted">muftiwp.gov.my ↗</div></div></a>`).join("")}</div></div>` : "";
+function viewMufti() {
+  const nama = Object.fromEntries(TOPICS.map(t => [t.id, t.emoji + " " + t.nama])); nama.doa = "🤲 Doa";
+  $app.innerHTML = `<h2 class="sec">Hadis &amp; Sunnah</h2>${segHadis("mufti")}
+    <div class="card gold"><b>🏛️ Nasihat &amp; Rujukan Mufti</b><p class="small" style="margin:6px 0 10px">Jawapan, huraian hadis dan nasihat rasmi daripada Jabatan Mufti Wilayah Persekutuan. Artikel dibuka di laman rasmi mereka.</p>
+      <form class="searchbox" onsubmit="event.preventDefault();const v=this.q.value.trim();if(v)window.open(MUFTI_CARI(v),'_blank')">
+        <input name="q" placeholder="Cari di laman Mufti WP: cth marah, hutang, ruqyah" autocomplete="off" enterkeyhint="search"><button>Cari ↗</button></form></div>
+    <h2 class="sec">Siri artikel</h2>
+    <div class="list">${MUFTI_SIRI.map(x => `<a href="${MUFTI_BASE + x.u}" target="_blank" rel="noopener"><div class="num"><i>📜</i></div><div class="grow"><b>${esc(x.n)}</b><div class="small muted">${esc(x.d)}</div></div><span class="muted">↗</span></a>`).join("")}
+      <a href="${MUFTI_EBOOK.u}" target="_blank" rel="noopener"><div class="num"><i>📘</i></div><div class="grow"><b>${esc(MUFTI_EBOOK.n)}</b><div class="small muted">e-Penerbitan Mufti WP</div></div><span class="muted">↗</span></a></div>
+    <h2 class="sec">Ikut topik kehidupan</h2>
+    ${Object.entries(MUFTI_TOPIK).map(([k, L]) => kadMufti(L, esc(nama[k] || k))).join("")}
+    <p class="muted small">Pautan dipilih oleh SAKU daripada carian laman muftiwp.gov.my. Kandungan adalah hak Jabatan Mufti Wilayah Persekutuan.</p>`;
 }
 
 /* ---------- Waktu solat ---------- */
@@ -545,7 +564,7 @@ function confirmPadam() {
 async function router() {
   const h = decodeURIComponent(location.hash.slice(1) || "/");
   const p = h.split("/").filter(Boolean);
-  const tab = { "": "utama", cari: "utama", topik: "utama", quran: "quran", surah: "quran", hadis: "hadis", sunnah: "hadis", doa: "doa", solat: "solat", kiblat: "solat" }[p[0] || ""];
+  const tab = { "": "utama", cari: "utama", topik: "utama", quran: "quran", surah: "quran", hadis: "hadis", sunnah: "hadis", mufti: "hadis", doa: "doa", solat: "solat", kiblat: "solat" }[p[0] || ""];
   clearInterval(window._tick); hentiKompas();
   document.querySelectorAll(".tabbar a").forEach(a => a.classList.toggle("aktif", a.dataset.tab === tab));
   terakhir = {}; window.scrollTo(0, 0);
@@ -560,6 +579,7 @@ async function router() {
   if (p[0] === "tetapan") return viewTetapan();
   if (p[0] === "hadis") return p[1] ? (p[2] === "bab" ? viewBab(p[1], +p[3]) : p[2] === "no" ? viewHadisNo(p[1], +p[3]) : viewKitab(p[1])) : viewHadis();
   if (p[0] === "sunnah") return viewSunnah(p[1]);
+  if (p[0] === "mufti") return viewMufti();
   if (p[0] === "solat") return viewSolat();
   if (p[0] === "kiblat") return viewKiblat();
   viewUtama();
