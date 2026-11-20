@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SAKU – Sumber Al-Quran & Sunnah</title>
+<meta name="description" content="Rujukan al-Quran, doa dan panduan kehidupan bersumber.">
+<meta name="theme-color" content="#0b5334">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="brand" onclick="go('#/')" aria-label="Utama">
+    <img src="icons/icon-192.png" alt="">
+    <span><b>SAKU</b><small>Sumber Al-Quran &amp; Sunnah</small></span>
+  </button>
+  <div class="top-actions">
+    <button id="btnTema" class="iconbtn" aria-label="Tukar tema">🌙</button>
+    <button class="iconbtn" onclick="go('#/kredit')" aria-label="Sumber & Kredit">ⓘ</button>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<nav class="tabbar">
+  <a href="#/" data-tab="utama"><span>⌂</span>Utama</a>
+  <a href="#/quran" data-tab="quran"><span>۞</span>Quran</a>
+  <a href="#/doa" data-tab="doa"><span>🤲</span>Doa</a>
+  <a href="#/simpanan" data-tab="simpanan"><span>★</span>Simpanan</a>
+</nav>
+
+<div id="toast" role="status"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
