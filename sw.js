@@ -1,5 +1,5 @@
 // Service worker SAKU: simpan fail app & ayat yang pernah dibuka supaya laju.
-const VERSI = "saku-v3";
+const VERSI = "saku-v5";
 const FAIL = ["./","index.html","manifest.json",
   "icons/icon-192.png","icons/icon-512.png","icons/icon-180.png"];
 

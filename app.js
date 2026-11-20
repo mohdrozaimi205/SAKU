@@ -280,7 +280,8 @@ function viewKredit() {
   <div class="card"><b>Font</b><p class="small">Amiri (SIL Open Font License) melalui Google Fonts.</p></div>
   <div class="card"><b>Indeks topik</b><p class="small">Pemilihan ayat untuk setiap topik disusun sebagai rujukan awal dan berlabel <i>Belum disemak</i> sehingga disemak oleh ahli ilmu. Ia bukan tafsir atau fatwa.</p></div>
   <div class="card"><b>Peringatan</b><p class="small">SAKU tidak mengeluarkan fatwa, tidak menjanjikan kesembuhan dan tidak menggantikan rawatan perubatan. Rujuk Pejabat Mufti atau ahli ilmu yang berkelayakan untuk persoalan hukum.</p></div>
-  <p class="muted small">SAKU V1 · PWA</p>`;
+  <p class="muted small">SAKU V1.1 · PWA</p>
+  <p style="text-align:center;margin:28px 0 8px;font-weight:600">Create By Abang Mie <span style="color:#e0245e" aria-label="love">❤</span></p>`;
 }
 
 
